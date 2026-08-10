@@ -224,16 +224,67 @@
   color: var(--text-secondary);
 }
 
+/* ── Responsive Audit Adjustments ── */
 @media (max-width: 768px) {
   .hero-identity-card {
     padding: 1.25rem;
   }
 
   .hero-balance-val {
-    font-size: 2.25rem;
+    font-size: 2.375rem;
   }
 
   .identity-full-addr {
-    max-width: 220px;
+    max-width: 260px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-identity-card {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .identity-top-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.875rem;
+  }
+
+  .identity-actions-right {
+    width: 100%;
+    gap: 0.5rem;
+  }
+
+  .identity-action-btn,
+  .identity-copy-btn {
+    min-height: 44px;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .identity-truncated-addr {
+    font-size: 1.125rem;
+  }
+
+  .identity-full-addr {
+    max-width: 200px;
+  }
+
+  .hero-balance-val {
+    font-size: 2rem;
+  }
+
+  .hero-usd-valuation {
+    font-size: 0.9375rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .hero-balance-val {
+    font-size: 1.75rem;
+  }
+
+  .identity-full-addr {
+    max-width: 160px;
   }
 }

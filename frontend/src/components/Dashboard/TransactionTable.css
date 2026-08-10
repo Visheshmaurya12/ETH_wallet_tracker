@@ -264,11 +264,17 @@
 .tx-mobile-card {
   background: var(--bg-surface);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 0.875rem 1rem;
+  border-radius: 10px;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
   gap: 0.625rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  transition: border-color 200ms var(--ease);
+}
+
+.tx-mobile-card:hover {
+  border-color: var(--border-hover);
 }
 
 .tx-mobile-card-top,
@@ -277,6 +283,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .tx-mobile-actions {
@@ -290,10 +298,25 @@
   align-items: center;
   gap: 0.25rem;
   font-size: 0.75rem;
+  font-weight: 500;
   color: var(--accent);
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
+  padding: 0.375rem 0.625rem;
+  min-height: 38px;
+  border-radius: 6px;
   background: var(--accent-muted);
+  border: 1px solid rgba(98, 214, 197, 0.2);
+  transition: background 200ms var(--ease);
+}
+
+.tx-mobile-view-btn:hover {
+  background: rgba(98, 214, 197, 0.22);
+}
+
+.tx-cards-mobile .copy-hash-btn {
+  min-height: 38px;
+  padding: 0.375rem 0.625rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
 }
 
 @media (max-width: 640px) {
@@ -308,5 +331,26 @@
   .tx-table-wrapper {
     background: transparent;
     border: none;
+  }
+
+  .tx-addrs-cell {
+    font-size: 0.75rem;
+  }
+
+  .addr-link {
+    padding: 0.25rem 0.375rem;
+    min-height: 32px;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+@media (max-width: 380px) {
+  .tx-mobile-card {
+    padding: 0.875rem;
+  }
+
+  .tx-amount-text {
+    font-size: 0.75rem;
   }
 }
