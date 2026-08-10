@@ -1,0 +1,96 @@
+.balance-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: border-color var(--duration) var(--ease);
+}
+
+.balance-card:hover {
+  border-color: var(--border-hover);
+}
+
+.balance-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.balance-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.balance-address-badge {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  transition: color var(--duration) var(--ease), border-color var(--duration) var(--ease);
+}
+
+.balance-address-badge:hover {
+  color: var(--text-primary);
+  border-color: var(--border-hover);
+}
+
+.copied-tooltip {
+  position: absolute;
+  top: -24px;
+  right: 0;
+  background: var(--accent);
+  color: #080B12;
+  font-family: var(--font);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 0.125rem 0.375rem;
+  border-radius: 3px;
+  white-space: nowrap;
+  animation: fadeIn 0.15s var(--ease);
+}
+
+.balance-value-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.375rem;
+}
+
+.balance-value {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.balance-suffix {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 640px) {
+  .balance-card {
+    padding: 1rem 1.25rem;
+  }
+
+  .balance-value {
+    font-size: 1.75rem;
+  }
+}

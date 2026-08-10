@@ -1,0 +1,9 @@
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  animation: fadeIn 0.3s var(--ease);
+}
+
+.tab-content-area {
+  min-height: 240px;
+}

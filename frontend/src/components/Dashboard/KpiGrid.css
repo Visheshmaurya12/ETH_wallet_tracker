@@ -1,0 +1,128 @@
+.summary-row-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.summary-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: border-color var(--duration) var(--ease), background var(--duration) var(--ease), transform var(--duration) var(--ease);
+}
+
+.summary-card:hover {
+  border-color: var(--border-hover);
+  background: var(--bg-elevated);
+  transform: translateY(-2px);
+}
+
+.summary-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.summary-card-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.summary-card-badge {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--bg-elevated);
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
+
+.summary-card-badge--success {
+  color: var(--success);
+  background: var(--success-muted);
+  border-color: rgba(74, 222, 128, 0.2);
+}
+
+.summary-card-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+  display: flex;
+  align-items: baseline;
+  gap: 0.375rem;
+}
+
+.summary-card-suffix {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+/* ── Wide Tablet Viewport (841px - 1024px) ── */
+@media (min-width: 841px) and (max-width: 1024px) {
+  .summary-row-container {
+    gap: 0.75rem;
+  }
+
+  .summary-card {
+    padding: 1rem 1.125rem;
+  }
+
+  .summary-card-value {
+    font-size: 1.375rem;
+  }
+}
+
+/* ── Narrow Tablet Viewport (641px - 840px): 2 + 1 Layout ── */
+@media (min-width: 641px) and (max-width: 840px) {
+  .summary-row-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.875rem;
+  }
+
+  .summary-card {
+    padding: 1rem 1.25rem;
+  }
+
+  .summary-card-value {
+    font-size: 1.5rem;
+  }
+
+  .summary-card:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ── Mobile Viewport (< 640px): 1-Column Stack ── */
+@media (max-width: 640px) {
+  .summary-row-container {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .summary-card {
+    padding: 1rem 1.25rem;
+  }
+
+  .summary-card-value {
+    font-size: 1.5rem;
+  }
+
+  /* Reset column span to ensure clean vertical stacking */
+  .summary-card:last-child {
+    grid-column: auto;
+  }
+}
