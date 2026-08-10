@@ -32,7 +32,7 @@ export default function TransactionTable({ transactions = [], trackedAddress = '
 
   const truncateAddress = (addr) => {
     if (!addr) return '';
-    return `${addr.substring(0, 4)}...${addr.substring(addr.length - 2)}`;
+    return `${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`;
   };
 
   const truncateHash = (hash) => {
@@ -76,7 +76,7 @@ export default function TransactionTable({ transactions = [], trackedAddress = '
         </thead>
         <tbody>
           {transactions.map((tx, index) => {
-            const isSuccess = tx.isError === '0';
+            const isSuccess = !tx.isError;
             const isIncoming = tx.to && tx.to.toLowerCase() === normalizedTracked;
 
             let typeKey = isIncoming ? 'received' : 'sent';
@@ -89,11 +89,7 @@ export default function TransactionTable({ transactions = [], trackedAddress = '
               typeArrow = '✕';
             }
 
-            const valEthFloat = parseFloat(tx.value || 0) / 1e18;
-            const formattedValue =
-              valEthFloat < 0.0001 && valEthFloat > 0
-                ? '<0.0001'
-                : valEthFloat.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
+            const formattedValue = tx.eth_value || '0';
 
             const relativeTimeStr = getTimeAgo(parseInt(tx.timeStamp || 0));
             const isCopied = copiedHash === tx.hash;
@@ -211,7 +207,7 @@ export default function TransactionTable({ transactions = [], trackedAddress = '
       {/* Mobile Compact Cards View */}
       <div className="tx-cards-mobile" role="region" aria-label="Mobile transaction cards list">
         {transactions.map((tx, index) => {
-          const isSuccess = tx.isError === '0';
+          const isSuccess = !tx.isError;
           const isIncoming = tx.to && tx.to.toLowerCase() === normalizedTracked;
 
           let typeKey = isIncoming ? 'received' : 'sent';
@@ -224,11 +220,7 @@ export default function TransactionTable({ transactions = [], trackedAddress = '
             typeArrow = '✕';
           }
 
-          const valEthFloat = parseFloat(tx.value || 0) / 1e18;
-          const formattedValue =
-            valEthFloat < 0.0001 && valEthFloat > 0
-              ? '<0.0001'
-              : valEthFloat.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
+          const formattedValue = tx.eth_value || '0';
 
           const relativeTimeStr = getTimeAgo(parseInt(tx.timeStamp || 0));
           const isCopied = copiedHash === tx.hash;

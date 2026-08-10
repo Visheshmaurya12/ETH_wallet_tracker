@@ -2,10 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import './SearchBar.css';
 
-const ENS_MAP = {
-  'vitalik.eth': '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
-};
-
 const DEFAULT_ENS_EXAMPLE = 'vitalik.eth';
 
 const SearchBar = ({ onSearch, loading }) => {
@@ -98,15 +94,11 @@ const SearchBar = ({ onSearch, loading }) => {
       return;
     }
 
-    let targetAddress = rawVal;
+    const isEthAddr = /^0x[a-fA-F0-9]{40}$/.test(rawVal);
+    const isEns = lowerVal.endsWith('.eth');
 
-    // Handle ENS resolution
-    if (lowerVal.endsWith('.eth')) {
-      targetAddress = ENS_MAP[lowerVal] || '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
-    }
-
-    if (!/^0x[a-fA-F0-9]{40}$/.test(targetAddress)) {
-      setError('Invalid Ethereum address. Check the 42-character hex address and try again.');
+    if (!isEthAddr && !isEns) {
+      setError('Invalid Ethereum format. Enter a 42-character hex address or a .eth ENS domain.');
       setStatus('invalid');
       triggerErrorShake();
       return;
@@ -114,8 +106,9 @@ const SearchBar = ({ onSearch, loading }) => {
 
     setError('');
     setStatus('success');
-    onSearch(targetAddress, lowerVal.endsWith('.eth') ? lowerVal : null);
+    onSearch(rawVal);
   };
+
 
   const handlePaste = async () => {
     try {

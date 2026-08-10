@@ -8,10 +8,12 @@ export default function ActivityVisualization({ transactions = [], address = '' 
 
   // Process transaction data for visualization
   const processedTxs = transactions.map((tx) => {
-    const valEth = parseFloat(tx.value || 0) / 1e18;
+    // Use eth_value (BigInt-safe string from backend) — avoids float precision loss
+    const valEth = parseFloat(tx.eth_value || '0') || 0;
     const isIncoming = tx.to && tx.to.toLowerCase() === normalizedAddr;
-    const isSuccess = tx.isError === '0';
-    const dateStr = new Date(tx.timeStamp * 1000).toLocaleDateString('en-US', {
+    const isSuccess = !tx.isError;
+    const timeStampNum = typeof tx.timeStamp === 'number' ? tx.timeStamp : parseInt(tx.timeStamp, 10) || 0;
+    const dateStr = new Date(timeStampNum * 1000).toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
     });
@@ -22,7 +24,7 @@ export default function ActivityVisualization({ transactions = [], address = '' 
       isIncoming,
       isSuccess,
       dateStr,
-      gasUsed: parseInt(tx.gasUsed || 0),
+      gasUsed: tx.gasUsed || 0,
     };
   });
 

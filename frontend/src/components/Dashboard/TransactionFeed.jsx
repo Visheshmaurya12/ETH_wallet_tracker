@@ -11,7 +11,7 @@ export default function TransactionFeed({ transactions = [], trackedAddress = ''
 
   const filteredTransactions = useMemo(() => {
     return transactions.filter((tx) => {
-      const isSuccess = tx.isError === '0';
+      const isSuccess = !tx.isError;
       const isIncoming = tx.to && tx.to.toLowerCase() === trackedAddress.toLowerCase();
       const isOutgoing = tx.from && tx.from.toLowerCase() === trackedAddress.toLowerCase();
 
@@ -47,20 +47,22 @@ export default function TransactionFeed({ transactions = [], trackedAddress = ''
 
     const headers = ['TxHash', 'Status', 'Type', 'From', 'To', 'Value_ETH', 'GasUsed', 'Timestamp'];
     const rows = filteredTransactions.map((tx) => {
-      const isSuccess = tx.isError === '0' ? 'Confirmed' : 'Failed';
+      const isSuccess = !tx.isError ? 'Confirmed' : 'Failed';
       const isIncoming = tx.to && tx.to.toLowerCase() === trackedAddress.toLowerCase();
       const type = isIncoming ? 'IN' : 'OUT';
-      const valEth = (parseFloat(tx.value || 0) / 1e18).toFixed(6);
+      // Use eth_value (BigInt-safe string from backend) for precision
+      const valEth = parseFloat(tx.eth_value || '0').toFixed(6);
+      const timeStampNum = typeof tx.timeStamp === 'number' ? tx.timeStamp : parseInt(tx.timeStamp, 10) || 0;
 
       return [
         tx.hash,
         isSuccess,
         type,
-        tx.from,
-        tx.to,
+        tx.from || '',
+        tx.to || '(contract creation)',
         valEth,
-        tx.gasUsed,
-        new Date(tx.timeStamp * 1000).toISOString(),
+        tx.gasUsed || 0,
+        new Date(timeStampNum * 1000).toISOString(),
       ].join(',');
     });
 

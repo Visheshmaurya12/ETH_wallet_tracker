@@ -31,15 +31,18 @@ export default function HistoricalBalanceChart({
     // Walk through verified transactions to compute historical balance points
     for (let i = 0; i < transactions.length; i++) {
       const tx = transactions[i];
-      if (tx.isError !== '0') continue; // Skip reverted transactions
+      if (tx.isError) continue; // Skip reverted transactions
 
-      const valEth = parseFloat(tx.value || 0) / 1e18;
+      // Use eth_value (BigInt-safe precision string from backend) instead of
+      // parseFloat(tx.value) / 1e18 which loses precision for large Wei amounts
+      const valEth = parseFloat(tx.eth_value || '0') || 0;
       const isIncoming = tx.to && tx.to.toLowerCase() === normalizedAddr;
 
       const delta = isIncoming ? valEth : -valEth;
       runningBalance = Math.max(0, runningBalance - delta);
 
-      const txTime = new Date(tx.timeStamp * 1000);
+      const timeStampNum = typeof tx.timeStamp === 'number' ? tx.timeStamp : parseInt(tx.timeStamp, 10) || 0;
+      const txTime = new Date(timeStampNum * 1000);
       points.push({
         dateStr: txTime.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
         timestamp: tx.timeStamp,

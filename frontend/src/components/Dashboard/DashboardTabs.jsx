@@ -6,7 +6,7 @@ export default function DashboardTabs({ activeTab, onTabChange, txCount = 0 }) {
     {
       id: 'transactions',
       label: 'Transactions',
-      badge: txCount,
+      badge: txCount > 0 ? txCount : null,
       icon: (
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <line x1="8" y1="6" x2="21" y2="6" />
@@ -21,7 +21,7 @@ export default function DashboardTabs({ activeTab, onTabChange, txCount = 0 }) {
     {
       id: 'analytics',
       label: 'Analytics',
-      badge: 'Metrics',
+      badge: null,
       icon: (
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <line x1="18" y1="20" x2="18" y2="10" />
@@ -32,8 +32,8 @@ export default function DashboardTabs({ activeTab, onTabChange, txCount = 0 }) {
     },
     {
       id: 'assets',
-      label: 'Asset Holdings',
-      badge: 'ETH',
+      label: 'Assets',
+      badge: null,
       icon: (
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M21 12V7H5a2 2 0 010-4h14v4" />
@@ -59,7 +59,9 @@ export default function DashboardTabs({ activeTab, onTabChange, txCount = 0 }) {
             >
               <span className="dash-tab-icon">{tab.icon}</span>
               <span className="dash-tab-label">{tab.label}</span>
-              {tab.badge !== undefined && <span className="dash-tab-badge">{tab.badge}</span>}
+              {tab.badge !== null && tab.badge !== undefined && (
+                <span className="dash-tab-badge">{tab.badge}</span>
+              )}
             </button>
           );
         })}

@@ -5,12 +5,12 @@ export default function AnalyticsView({ transactions = [], balance = 0 }) {
   const totalTxs = transactions.length;
   const ethBalance = parseFloat(balance) || 0;
 
-  const successfulTxs = transactions.filter((tx) => tx.isError === '0');
-  const failedTxs = transactions.filter((tx) => tx.isError !== '0');
+  const successfulTxs = transactions.filter((tx) => !tx.isError);
+  const failedTxs = transactions.filter((tx) => tx.isError);
 
-  const totalGas = transactions.reduce((sum, tx) => sum + (parseInt(tx.gasUsed) || 0), 0);
+  const totalGas = transactions.reduce((sum, tx) => sum + (tx.gasUsed || 0), 0);
   const avgGas = totalTxs > 0 ? Math.round(totalGas / totalTxs) : 0;
-  const totalEthVolume = transactions.reduce((sum, tx) => sum + (parseFloat(tx.value || 0) / 1e18), 0);
+  const totalEthVolume = transactions.reduce((sum, tx) => sum + (parseFloat(tx.eth_value || '0') || 0), 0);
 
   return (
     <div className="analytics-view">
