@@ -1,61 +1,94 @@
-require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const axios = require('axios');
+const helmet = require('helmet');
+const config = require('./src/config');
+const walletRoutes = require('./src/routes/wallet.routes');
+const errorHandler = require('./src/middleware/errorHandler');
+
+// ── Process-level safety net ───────────────────────────────────────────────
+// These catch errors that escape all Express middleware (e.g. in sync code
+// outside request handlers, or unhandled promise rejections in callbacks).
+// They log the full detail server-side but never leak it to clients.
+process.on('uncaughtException', (err) => {
+  console.error('[FATAL] Uncaught Exception:', err);
+  // Give the logger time to flush, then exit so the process manager restarts cleanly.
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('[FATAL] Unhandled Promise Rejection at:', promise, 'reason:', reason);
+  // Do NOT exit here — unhandled rejections in non-request async paths should
+  // not kill the server; log and continue.
+});
+
 
 const app = express();
-app.use(cors());
-app.use(express.json());
 
-const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
-const PORT = process.env.PORT || 5000;
+// Security Middleware
+// Helmet sets various HTTP headers for security (HSTS, NoSniff, XSS filter, etc.)
+app.use(helmet({
+  contentSecurityPolicy: process.env.NODE_ENV === 'production' ? undefined : false,
+  crossOriginResourcePolicy: { policy: 'cross-origin' }, // needed if API is called from another domain
+}));
 
-function isValidEthAddress(address) {
-  return /^0x[a-fA-F0-9]{40}$/.test(address);
+// CORS Configuration - Phase 12 Security
+// Restrict to allowed origins instead of '*'
+app.use(cors({
+  origin: (origin, callback) => {
+    // In development or if explicitly allowed (e.g., no origin like curl/server-to-server)
+    if (!origin) return callback(null, true);
+
+    const allowedOrigins = config.allowedOrigins;
+    
+    if (allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'OPTIONS'], // We only have GET endpoints right now
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+
+// Request size limits to prevent payload attacks
+app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+
+// Phase 15 - Lightweight Root Health Check
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Mount API routes
+app.use('/api', walletRoutes);
+
+// Global Error Handler
+app.use(errorHandler);
+
+// Start Server
+const server = app.listen(config.port, () => {
+  console.log(`🚀 ETH Wallet Tracker API running on http://localhost:${config.port} [${config.nodeEnv}]`);
+});
+
+// Graceful Shutdown
+function gracefulShutdown(signal) {
+  console.log(`\nReceived ${signal}. Shutting down server gracefully...`);
+  server.close(() => {
+    console.log('HTTP server closed. Exiting process.');
+    process.exit(0);
+  });
+
+  setTimeout(() => {
+    console.error('Forced shutdown due to timeout');
+    process.exit(1);
+  }, 10000);
 }
 
-app.get('/api/balance', async (req, res) => {
-  const { address } = req.query;
-  if (!address || !isValidEthAddress(address)) {
-    return res.status(400).json({ success: false, error: 'Invalid Ethereum address' });
-  }
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
-  try {
-    const url = `https://api.etherscan.io/v2/api?chainid=1&module=account&action=balance&address=${address}&apikey=${ETHERSCAN_API_KEY}`;
-    const response = await axios.get(url);
-    if (response.data.status !== '1' && response.data.message !== 'No transactions found') {
-      return res.status(500).json({ success: false, error: response.data.message || 'Error fetching balance' });
-    }
-    const balanceWei = response.data.result;
-    const balanceEth = balanceWei / 1e18;
-    return res.json({ success: true, balance: balanceEth });
-  } catch (error) {
-    return res.status(500).json({ success: false, error: error.message });
-  }
-});
-
-app.get('/api/transactions', async (req, res) => {
-  const { address } = req.query;
-  if (!address || !isValidEthAddress(address)) {
-    return res.status(400).json({ success: false, error: 'Invalid Ethereum address' });
-  }
-
-  try {
-    const url = `https://api.etherscan.io/v2/api?chainid=1&module=account&action=txlist&address=${address}&sort=desc&apikey=${ETHERSCAN_API_KEY}`;
-    const response = await axios.get(url);
-    if (response.data.status !== '1' && response.data.message !== 'No transactions found') {
-      return res.status(500).json({ success: false, error: response.data.message || 'Error fetching transactions' });
-    }
-    const transactions = (response.data.result || []).slice(0, 10).map(tx => ({
-      ...tx,
-      eth_value: parseInt(tx.value) / 1e18
-    }));
-    return res.json({ success: true, transactions });
-  } catch (error) {
-    return res.status(500).json({ success: false, error: error.message });
-  }
-});
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+module.exports = app;
