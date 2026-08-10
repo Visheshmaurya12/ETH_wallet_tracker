@@ -1,34 +1,120 @@
-A Flask-based Web3 dashboard that allows users to track Ethereum wallet balances and recent transactions in real time using the Etherscan API.
+Ethereum Wallet Tracker
+A modern Web3 wallet analytics application for tracking Ethereum wallet balances, ENS domains, and on-chain transactions.
 
-🚀 Live Demo: 
+Overview
+Ethereum Wallet Tracker is a full-stack Web3 application that allows users to explore publicly available Ethereum wallet information through a clean, responsive interface.
 
-📌 Features
+Users can search using:
+Ethereum wallet addresses
+ENS domains
 
-🔐 Track any Ethereum wallet address
-💰 View live ETH balance
-📜 Fetch recent transactions
-⛽ Display gas used per transaction
-✅ Show transaction status (Success / Failed)
-🎨 Clean, responsive Bootstrap UI
-☁️ Deployed on cloud (Railway)
+The application retrieves and presents wallet information such as:
+ETH balance
+Transaction history
+Wallet activity
+ENS resolution
+Ethereum network information
 
-🛠 Tech Stack
+The project uses a React + Vite frontend with a Node.js + Express backend, while blockchain data is retrieved through external Ethereum/Etherscan services.
 
-Layer	Technology
-Backend	Python, Flask
-Frontend	HTML, Bootstrap 5
-Blockchain Data	Etherscan API
-Deployment Railway
-Server	Gunicorn
+✨ Features
+🔍 Wallet Tracking
 
-🧠 What This Project Demonstrates
+Search for any publicly accessible Ethereum wallet address and explore its on-chain activity.
 
-Real-world Web3 wallet analytics
-Python API integration
-JSON parsing of on-chain data
-Flask backend + frontend templating
-Secure environment variable usage
+0x742d35Cc6634C0532925a3b844Bc454e4438f44e
+🌐 ENS Resolution
 
-Cloud deployment experience
+Search using ENS domains such as:
 
-This is a foundational Web3 backend project used by analytics platforms and blockchain startups.
+vitalik.eth
+
+ENS resolution is handled dynamically rather than relying on hardcoded wallet mappings.
+
+💰 ETH Balance
+
+Retrieve the wallet's current ETH balance with Web3-safe numeric handling.
+
+The backend avoids JavaScript floating-point arithmetic for Wei values to prevent precision loss when working with large blockchain numbers.
+
+📜 Transaction History
+
+View wallet transactions with relevant information such as:
+
+Transaction hash
+Sender
+Receiver
+ETH value
+Timestamp
+Transaction status
+⚡ Performance Optimizations
+
+The backend includes caching and optimized request handling to reduce unnecessary calls to external blockchain APIs.
+
+🛡️ Rate Limiting
+
+Expensive API endpoints are protected against excessive requests to prevent abuse and external API quota exhaustion.
+
+🔐 Secure Backend
+
+The backend includes:
+
+Input validation
+CORS configuration
+Security headers
+Environment-based secrets
+Structured error handling
+Request timeouts
+🔄 Frontend ↔ Backend Coordination
+
+The frontend uses a centralized API service instead of scattering raw API requests throughout components.
+
+Request cancellation prevents stale requests from overwriting newer wallet searches.
+
+📱 Responsive UI
+
+The interface is designed for:
+
+Desktop
+Laptop
+Tablet
+Mobile
+🏗️ Architecture
+
+The application follows a layered architecture:
+
+                    ┌─────────────────────┐
+                    │      User           │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │   React + Vite      │
+                    │     Frontend        │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │   API Service       │
+                    │  Request Handling   │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │   Express Backend   │
+                    │                     │
+                    │ Routes              │
+                    │ Controllers         │
+                    │ Middleware          │
+                    │ Services            │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │ Blockchain /        │
+                    │ External API Layer  │
+                    │                     │
+                    │ Ethereum / Etherscan│
+                    └─────────────────────┘
+
+The original implementation used a monolithic Express server as a proxy to Etherscan V2; the backend was subsequently structured into dedicated configuration, services, controllers, middleware, routes, and utility layers.
