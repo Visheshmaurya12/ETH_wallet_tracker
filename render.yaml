@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: eth-wallet-tracker-api
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: ETHERSCAN_API_KEY
+        sync: false   # Set this manually in Render dashboard → Environment
+      - key: ALLOWED_ORIGINS
+        sync: false   # Set to your frontend URL, e.g. https://your-app.vercel.app
+    healthCheckPath: /health
+    autoDeploy: true

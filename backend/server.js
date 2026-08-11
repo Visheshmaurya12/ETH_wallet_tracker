@@ -24,6 +24,10 @@ process.on('unhandledRejection', (reason, promise) => {
 
 const app = express();
 
+// Trust the first proxy hop (Render, Heroku, etc.) so express-rate-limit
+// reads the real client IP from X-Forwarded-For instead of the internal proxy IP.
+app.set('trust proxy', 1);
+
 // Security Middleware
 // Helmet sets various HTTP headers for security (HSTS, NoSniff, XSS filter, etc.)
 app.use(helmet({
