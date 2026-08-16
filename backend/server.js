@@ -73,26 +73,28 @@ app.use('/api', walletRoutes);
 // Global Error Handler
 app.use(errorHandler);
 
-// Start Server
-const server = app.listen(config.port, () => {
-  console.log(`🚀 ETH Wallet Tracker API running on http://localhost:${config.port} [${config.nodeEnv}]`);
-});
-
-// Graceful Shutdown
-function gracefulShutdown(signal) {
-  console.log(`\nReceived ${signal}. Shutting down server gracefully...`);
-  server.close(() => {
-    console.log('HTTP server closed. Exiting process.');
-    process.exit(0);
+// Start Server (only when run directly as standalone script)
+if (require.main === module) {
+  const server = app.listen(config.port, () => {
+    console.log(`🚀 ETH Wallet Tracker API running on http://localhost:${config.port} [${config.nodeEnv}]`);
   });
 
-  setTimeout(() => {
-    console.error('Forced shutdown due to timeout');
-    process.exit(1);
-  }, 10000);
-}
+  // Graceful Shutdown
+  function gracefulShutdown(signal) {
+    console.log(`\nReceived ${signal}. Shutting down server gracefully...`);
+    server.close(() => {
+      console.log('HTTP server closed. Exiting process.');
+      process.exit(0);
+    });
 
-process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
-process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+    setTimeout(() => {
+      console.error('Forced shutdown due to timeout');
+      process.exit(1);
+    }, 10000);
+  }
+
+  process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+  process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+}
 
 module.exports = app;

@@ -11,12 +11,13 @@ const config = {
 };
 
 // Phase 13 - Strict Environment Validation
-// Fail fast on startup if required secrets are missing
 if (!config.etherscanApiKey || config.etherscanApiKey === 'your_api_key_here' || config.etherscanApiKey === 'your_etherscan_api_key_here') {
-  console.error('\n[FATAL ERROR] ETHERSCAN_API_KEY is missing or invalid in the environment.');
-  console.error('Please configure a valid API key in backend/.env');
-  console.error('You can get a free key at: https://etherscan.io/apis\n');
-  process.exit(1);
+  console.warn('\n[WARNING] ETHERSCAN_API_KEY is missing or unconfigured in the environment.');
+  console.warn('Please configure a valid API key in Vercel Environment Variables or backend/.env');
+  console.warn('You can get a free key at: https://etherscan.io/apis\n');
+  if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+    process.exit(1);
+  }
 }
 
 module.exports = config;
