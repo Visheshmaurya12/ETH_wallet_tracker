@@ -1,7 +1,8 @@
-Ethereum Wallet Tracker
+# Ethereum Wallet Tracker
+
 A modern Web3 wallet analytics application for tracking Ethereum wallet balances, ENS domains, and on-chain transactions.
 
-Overview
+## Overview
 Ethereum Wallet Tracker is a full-stack Web3 application that allows users to explore publicly available Ethereum wallet information through a clean, responsive interface.
 
 Users can search using:
@@ -17,7 +18,7 @@ Ethereum network information
 
 The project uses a React + Vite frontend with a Node.js + Express backend, while blockchain data is retrieved through external Ethereum/Etherscan services.
 
-✨ Features
+## ✨ Features
 🔍 Wallet Tracking
 
 Search for any publicly accessible Ethereum wallet address and explore its on-chain activity.
@@ -37,7 +38,7 @@ Retrieve the wallet's current ETH balance with Web3-safe numeric handling.
 
 The backend avoids JavaScript floating-point arithmetic for Wei values to prevent precision loss when working with large blockchain numbers.
 
-📜 Transaction History
+## 📜 Transaction History
 
 View wallet transactions with relevant information such as:
 
@@ -55,7 +56,7 @@ The backend includes caching and optimized request handling to reduce unnecessar
 
 Expensive API endpoints are protected against excessive requests to prevent abuse and external API quota exhaustion.
 
-🔐 Secure Backend
+## 🔐 Secure Backend
 
 The backend includes:
 
@@ -71,7 +72,7 @@ The frontend uses a centralized API service instead of scattering raw API reques
 
 Request cancellation prevents stale requests from overwriting newer wallet searches.
 
-📱 Responsive UI
+## 📱 Responsive UI
 
 The interface is designed for:
 
@@ -79,7 +80,7 @@ Desktop
 Laptop
 Tablet
 Mobile
-🏗️ Architecture
+## 🏗️ Architecture
 
 The application follows a layered architecture:
 
